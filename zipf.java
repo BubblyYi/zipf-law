@@ -1,4 +1,4 @@
-// Copyright 2003-2009 Bill Manaris, Dana Hughes, J.R. Armstrong, Thomas Zalonis, Luca Pellicoro, 
+// Copyright 2003-2009 Bill Manaris, Dana Hughes, J.R. Armstrong, Thomas Zalonis, Luca Pellicoro,
 //                     Chris Wagner, Chuck McCormick
 //
 //    This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import java.util.Enumeration;
  * This class contains static methods that calculate the slope and R^2 of a trendline
  * of a Zipf distribution (byRank or bySize).
  * <br>
- * <br>The byRank distribution plots the values (y-axis) against the ranks of the values from largest to smallest 
+ * <br>The byRank distribution plots the values (y-axis) against the ranks of the values from largest to smallest
  * (x-axis) in log-log scale. The ranks are generated automatically.
  * <br>
  * <br>The bySize distribution plots the values (y-axis) against the supplied keys (x-axis) in log-log scale.
@@ -34,7 +34,7 @@ import java.util.Enumeration;
  * <br>
  * <b>NOTE: </b> The provided methods are static, so call them as Zipf.byRank(values) or Zipf.bySize(keys, values).
  * <br>
- * <br> 
+ * <br>
  * @author Luca Pellicoro, Chris Wagner, Bill Manaris (based on VB code by Chuck McCormick and Bill Manaris )
  *
  * @version 1.6 (October 19, 2009) Dana Hughes
@@ -42,7 +42,7 @@ import java.util.Enumeration;
  *       This allows for batch processes to continue without exiting due to this exception.
  *       Also, numeric values may be more meaningful.
  * @version 1.5 (November 3, 2009) Thomas Zalonis
- *     - Translated the latest zipf.py update (see zipf.py update message below) to Zipf.java 
+ *     - Translated the latest zipf.py update (see zipf.py update message below) to Zipf.java
  * 	 zipf.py version 1.5 (December 24, 2008)  J.R. Armstrong and Bill Manaris
  *     		- Now we are differentiating between monotonous and random phenomena (vertical vs. horizontal trendlines).
  *       	  In the first case, we return slope = 0 and r2 = 0.
@@ -57,12 +57,12 @@ import java.util.Enumeration;
  * @version 1.0 (May 10, 2003)
  */
 
-public class Zipf 
+public class Zipf
 {
    /*
    public static void main(String[] args)
    {
-      // numbers can be entered from the command line as "java Zipf 1 2 2 3 3 3 3" or 
+      // numbers can be entered from the command line as "java Zipf 1 2 2 3 3 3 3" or
       // any other sequence of numbers by uncommenting the code below.
 
       //double[] phen = new double[args.length];
@@ -73,7 +73,7 @@ public class Zipf
 
       //double[] phen = {1, 1, 1};             // check monotonous
       //double[] phen = {2, 2, 2, 3, 3, 3};    // check uniformly distributed (white noise)
-      //double[] phen = {1, 1, 2};             // check truly zipfian (pink noise)    
+      //double[] phen = {1, 1, 2};             // check truly zipfian (pink noise)
       //double[] phen = {1, 1, 1, 1, 2};       // check brown noise
       double[] phen = {1, 2, 2, 3, 3, 3, 3}; // check general case
 
@@ -97,14 +97,14 @@ public class Zipf
          }
          else
          {
-            histogram.put(phen[i], new Integer(1)); 
+            histogram.put(phen[i], new Integer(1));
          }
       }
 
       // next, extract the counts and calculate their rank-frequency (Zipfian) distribution
       double[] counts = new double[histogram.size()];
       int i = 0;
-      for (Enumeration e = histogram.keys(); e.hasMoreElements();) 
+      for (Enumeration e = histogram.keys(); e.hasMoreElements();)
       {
          counts[i] = (double)((Integer)histogram.get(e.nextElement())).intValue();
          i++;
@@ -119,7 +119,7 @@ public class Zipf
       // now, extract the sizes calculate their side-frequency (Zipfian) distribution
       double[] sizes = new double[histogram.size()];
       i = 0;
-      for (Enumeration e = histogram.keys(); e.hasMoreElements();) 
+      for (Enumeration e = histogram.keys(); e.hasMoreElements();)
       {
          sizes[i] = ((Double)e.nextElement()).doubleValue();
          i++;
@@ -134,8 +134,8 @@ public class Zipf
    */
 
 	/**
-     *      
-	 * Calculate the slope and R^2 of the rank-frequency distribution of the provided frequencies.  
+     *
+	 * Calculate the slope and R^2 of the rank-frequency distribution of the provided frequencies.
 	 * Ranks will be automatically generated.
 	 * <br>
 	 * <br>
@@ -143,14 +143,14 @@ public class Zipf
 	 * <br>
 	 * <br>
 	 * @param frequencies	The values whose rank-frequency distribution to calculate (y-axis).
-	 * 
+	 *
 	 * @return  A double array containing slope (at index 0) and R^2 (at index 1).
 	 */
     public static double[] byRank(double[] frequencies)
     {
-        
+
         int numberOfValues = frequencies.length;
-        
+
         // Step 1 and 2: Sort the vals and create keys
 		// Copy vals so sort doesn't alter it.
 		double[] newValues = new double[numberOfValues];
@@ -164,78 +164,78 @@ public class Zipf
 		Arrays.sort(newValues);
 
 		checkKeysAndValues(keys, newValues);
-		
+
 		// Step 3: Get Zipf Slope and R2 of keys/values.
         return calculateSlopeR2(keys, newValues);
     }
-    
+
    /**
     * Calculate the slope and R^2 of the size-frequency distribution of the provided sizes and frequencies.
-	* <br>
-	* <br>
-	* '''NOTE:''' Caller does not need to sort the sizes or frequencies provided.
-	* <br>
-	* <br>
+    * <br>
+    * <br>
+    * '''NOTE:''' Caller does not need to sort the sizes or frequencies provided.
+    * <br>
+    * <br>
     * @param sizes	The sizes (x-axis).
     * @param frequencies	The frequencies (y-axis).
-    * 
-	* @return  An double array containing slope (at index 0) and R^2 (at index 1).    
-	*/
+    *
+    * @return  An double array containing slope (at index 0) and R^2 (at index 1).
+    */
     public static double[] bySize(double[] sizes, double[] frequencies)
-    {   
+    {
 
-        checkKeysAndValues(sizes, frequencies);    
+        checkKeysAndValues(sizes, frequencies);
         // NOTE:  There is no need to sort the parallel arrays of keys and vals, since
 	    //        getSlopeR2() does not care if the keys are sorted in any particular order;
 	    //        it cares only that the association between keys[i] and vals[i] is correct.
-        
+
         return calculateSlopeR2(sizes, frequencies);
     }
-    
-    
-    
+
+
+
     /*******************************
-	 * SUPPORTING METHODS
-	 *******************************/	 
-    
+    * SUPPORTING METHODS
+    *******************************/
+
     /**
     * Checks if provided data is relatively error free.  In particular, it will raise exceptions if
     *   - a data array is empty
     *   - keys and values do not contain the same number of elements
-    *   - a data array contains negative or zero elements   
+    *   - a data array contains negative or zero elements
     */
-    private static void checkKeysAndValues(double[] keys, double[] values) 
+    private static void checkKeysAndValues(double[] keys, double[] values)
     {
         // NOTE:  The first exception (keys or values contain no elements) has been replaced with
-        //        setting the slope and r2 values to 0.  This allows for batch operations to be 
+        //        setting the slope and r2 values to 0.  This allows for batch operations to be
         //        performed without generating an Exception, or requiring the use of NaN's.
 
         // if (keys.length == 0 || values.length == 0)
         //     throw new IllegalArgumentException ("Data (values and keys) must contain at least one element.");
-            
+
         if (keys.length != values.length)
             throw new IllegalArgumentException("Keys and values must have the same length  (keys length was " + keys.length + " and values length was " + values.length + ").");
-            
+
         for (int i = 0; i < values.length; i++)
             if (keys[i] <= 0.0 || values[i] <= 0.0)
               throw new IllegalArgumentException ("Data must be positive: keys[" + i + "] was " + keys[i]  + " and values[" + i + "] was " + values[i] );
     }
-    
-    
-	/**
-	 * Calculates the linear regression (slope and R^2 (fit)) of a set of keys and values.
-	 * If slope and/or R^2 cannot be calculated, zero is returned.
-	 * 
-	 * @param keys	The keys for the set
-	 * @param vals	The values for the set
-	 * 
-	 * @return An array of doubles (slope is stored in index 0 and R^2 (fit) in index 1).
-	 */
-	private static double[] calculateSlopeR2(double[] keys, double[] vals) 
-	 {
-	 
-		// Log10(keys) is mapped to the X axis.
-		// Log10(vals) is mapped to the Y axis.
+
+
+    /**
+    * Calculates the linear regression (slope and R^2 (fit)) of a set of keys and values.
+    * If slope and/or R^2 cannot be calculated, zero is returned.
+    *
+    * @param keys	The keys for the set
+    * @param vals	The values for the set
+    *
+    * @return An array of doubles (slope is stored in index 0 and R^2 (fit) in index 1).
+    */
+    private static double[] calculateSlopeR2(double[] keys, double[] vals)
+    {
+
+    // Log10(keys) is mapped to the X axis.
+    // Log10(vals) is mapped to the Y axis.
 		double sumX = 0;	// holds the sum of X values.
 		double sumY = 0;	// holds the sum of Y values.
 		double sumXY = 0;	// holds the sum of X*Y values.
@@ -262,7 +262,7 @@ public class Zipf
          sr2[0] = 0.0;
          sr2[1] = 0.0;
       }
-      
+
       else
       {
         // the other extreme case:
@@ -288,9 +288,9 @@ public class Zipf
         {
 
             // Sum up the values for the calculations.
-            for (i = 0; i < keys.length; i++) 
+            for (i = 0; i < keys.length; i++)
             {
-                //System.out.print(" " + i + " ");  
+                //System.out.print(" " + i + " ");
                sumX += log10(keys[i]);
                sumY += log10(vals[i]);
                sumXY += log10(keys[i]) * log10(vals[i]);
@@ -325,24 +325,19 @@ public class Zipf
 	/**
 	 * The natural log of 10
 	 */
-	private static final double LN_10 = 2.3025850929940456840179914546844;	
+	private static final double LN_10 = 2.3025850929940456840179914546844;
 
 	/**
 	 * Calculate the Log base 10 of a number.
 	 * This is required because Math.log is not Log(10) but Ln (natural Log).
-	 * 
+	 *
 	 * Note: Log(b) n = Ln n / Ln b.
-	 * 
+	 *
 	 * @param n	The original number.
-	 * 
+	 *
 	 * @return Log(10) n
 	 */
 	private static double log10(double n) {
 		return Math.log(n)/LN_10;
 	}
-    
-    
-
-
 }
-
